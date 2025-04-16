@@ -1,18 +1,11 @@
 from enflow.nn.model import ENFlow
 import torch
-from enflow.data.base import DataLoader
+from enflow.data.base import DataLoader, write_xyz
 from enflow.utils.conversion import ang_to_lj, kelvin_to_lj, picosecond_to_lj, femtosecond_to_lj
 from enflow.utils.constants import sigma
 from enflow.data.lj import LJDataset
 from enflow.utils.helpers import get_box
 
-def write_xyz(out, file):
-    with open(file, 'w') as f:
-        f.write("%d\n%s\n" % (out.N.item(), ' '))
-        for x in out.pos:
-            x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
-           
 temp = 300 
 kBT = kelvin_to_lj(temp)
 softening = 0.1
@@ -22,10 +15,9 @@ dataset = LJDataset(node_nf=5, softening=0.1, target_kBT=kBT, dt=femtosecond_to_
 loader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 for i, data in enumerate(loader): 
-    if i==0:
-        break
+    break
     
-write_xyz(data, 'test.xyz')
+write_xyz(data*sigma*1e10, 'test.xyz')
 
 checkpoint_path = "model.cpt"
 checkpoint = torch.load(checkpoint_path, weights_only=False)

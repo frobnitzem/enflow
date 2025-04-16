@@ -17,13 +17,6 @@ from enflow.utils.conversion import ang_to_lj, kelvin_to_lj, picosecond_to_lj, f
 from enflow.utils.constants import sigma
 from enflow.utils.helpers import get_box
 
-def write_xyz(out, file):
-    with open(file, 'w') as f:
-        f.write("%d\n%s\n" % (10, ' '))
-        for x in out.pos:
-            x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
-
 yaml_file = 'config.yaml'
 with open(yaml_file, 'r') as f: args = yaml.load(f, Loader=yaml.FullLoader)
 temp = float(args['temp'])
@@ -50,6 +43,4 @@ for data in loader:
     out, _ = model(data)
     break
 
-write_xyz(out, 'lj.xyz')
-
- 
+write_xyz(out*sigma*1e10, 'lj.xyz')

@@ -6,18 +6,11 @@ import torch
 from enflow.flow.dynamics import LeapFrogIntegrator
 from enflow.nn.egcl import EGCL
 from enflow.data.sdf import SDFDataset
-from enflow.data.base import DataLoader
+from enflow.data.base import DataLoader, write_xyz
 from enflow.data import transforms
 from enflow.flow.loss import Alchemical_NLL
 from enflow.utils.conversion import ang_to_lj, kelvin_to_lj, picosecond_to_lj, femtosecond_to_lj
 from enflow.utils.helpers import get_box
-
-def write_xyz(out, file):
-    with open(file, 'a') as f:
-        f.write("%d\n%s\n" % (10, ' '))
-        for x in out.pos:
-            #x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
 
 def main(temp, num_epochs, hidden_nf, n_iter, dt, r_cut, softening, batch_size, lr, checkpoint_path, log_interval):
         start_epoch = 0

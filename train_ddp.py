@@ -14,18 +14,11 @@ from enflow.flow.dynamics import LeapFrogIntegrator
 from enflow.flow.loss import Alchemical_NLL
 from enflow.nn.egcl import EGCL
 from enflow.data.sdf import SDFDataset
-from enflow.data.base import DataLoader
+from enflow.data.base import DataLoader, write_xyz
 from enflow.data import transforms
 from enflow.utils.conversion import ang_to_lj, kelvin_to_lj, picosecond_to_lj, femtosecond_to_lj
 from enflow.utils.helpers import get_box
 from enflow.utils.constants import sigma
-
-def write_xyz(out, file):
-    with open(file, 'a') as f:
-        f.write("%d\n%s\n" % (10, ' '))
-        for x in out.pos:
-            #x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -78,7 +71,7 @@ def main(temp, num_epochs, hidden_nf, n_iter, dt, r_cut, softening, batch_size, 
         start_epoch = checkpoint['epoch']+1
         
     model = DDP(model, device_ids=[local_rank])
-    
+
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     if checkpoint: optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 

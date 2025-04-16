@@ -89,33 +89,30 @@ class LJDataset(BaseDataset):
         log = input_params['log_file']
         discard = input_params['discard']
         node_nf = input_params['node_nf']
-        
-        log_txt = ''
-        
-        for i,simulation in enumerate(input_params['simulations']):
-            N = simulation[0]
-            nT = simulation[1]
-        
-            pos, vel, kBT = md.run(N, nT)
-            
-            start = int(nT*discard/100)
-            
-            mean = kBT[start:].mean()
-            var = kBT[start:].var()
-            
-            log_txt += f'**********************\nSimulation {i}:\nN={N}\nNumber of timesteps:{nT}\n'
-            log_txt += f'Temperature Mean:{mean} and Variance:{var}\nTemperature log:\n'
-            log_txt += '\n'.join(["%.2f" % number for number in kBT])
-            log_txt += '\n'
-            self.append(
-                z=['Ar']*N,
-                h=torch.rand(N, node_nf, dtype=torch.float64),
-                g=torch.rand(N, node_nf, dtype=torch.float64),
-                pos=pos,
-                vel=vel,
-                N=N,
-                label=f'Temperature Mean:{mean} and Variance:{var}\n'
-            )
-            
+
         with open(log, 'w') as f:
-            f.write(log_txt)
+            for i,simulation in enumerate(input_params['simulations']):
+                N = simulation[0]
+                nT = simulation[1]
+
+                pos, vel, kBT = md.run(N, nT)
+
+                start = int(nT*discard/100)
+
+                mean = kBT[start:].mean()
+                var = kBT[start:].var()
+
+                log_txt = f'**********************\nSimulation {i}:\nN={N}\nNumber of timesteps:{nT}\n'
+                log_txt += f'Temperature Mean:{mean} and Variance:{var}\nTemperature log:\n'
+                log_txt += '\n'.join(["%.2f" % number for number in kBT])
+                log_txt += '\n'
+                self.append(
+                    z=['Ar']*N,
+                    h=torch.rand(N, node_nf, dtype=torch.float64),
+                    g=torch.rand(N, node_nf, dtype=torch.float64),
+                    pos=pos,
+                    vel=vel,
+                    N=N,
+                    label=f'Temperature Mean:{mean} and Variance:{var}\n'
+                )
+                f.write(log_txt)

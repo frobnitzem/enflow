@@ -1,22 +1,8 @@
 from enflow.data.sdf import SDFDataset
 from enflow.data.base import DataLoader
-from enflow.data import transforms
+from enflow.data import transforms, write_xyz
 from enflow.utils.constants import sigma
 import torch
-
-def write_xyz(file, pos, N, z):
-    with open(file, 'w') as f:
-        f.write("%d\n%s\n" % (N, ' '))
-        for zi, x in zip(z, pos):
-            x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % (zi, x[0].item(), x[1].item(), x[2].item()))
-            
-def write_xyz_(file, data):
-    with open(file, 'w') as f:
-        f.write("%d\n%s\n" % (data.N.item(), ' '))
-        for x in data.pos:
-            x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
 
 temp = 300
 

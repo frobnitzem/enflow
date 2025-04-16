@@ -10,13 +10,6 @@ from enflow.utils.constants import sigma
 from enflow.utils.helpers import get_box
 import numpy as np
 
-def write_xyz(out, file):
-    with open(file, 'w') as f:
-        f.write("%d\n%s\n" % (out.N.item(), ' '))
-        for x in out.pos:
-            x = x*sigma*1e10
-            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
-            
 temp = 300
 
 dataset = SDFDataset(raw_file="data/qm9/raw.sdf", processed_file="data/qm9/processed.pt", transform=transforms.Compose([transforms.ConvertPositionsFrom('ang'), transforms.Center(), transforms.RandomizeVelocity(temp)]))

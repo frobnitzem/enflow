@@ -175,3 +175,10 @@ class BaseDataset(torch.utils.data.Dataset, ABC):
     @abstractmethod
     def process(self, **input_params):
         pass
+
+def write_xyz(out, file):
+    with open(file, 'a') as f:
+        f.write("%d\n%s\n" % (out.N.item(), ' '))
+        for x in out.pos:
+            #x = x*sigma*1e10
+            f.write("%s %.18g %.18g %.18g\n" % ('Ar', x[0].item(), x[1].item(), x[2].item()))
